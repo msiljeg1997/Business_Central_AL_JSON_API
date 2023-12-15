@@ -78,7 +78,8 @@ codeunit 50123 JSONCodeUnit
                 if Evaluate(DecimalValue, JsonToken.AsValue().AsText()) then
                     MyRecord.vwap24Hr := DecimalValue;
         if Jobjekt.Get('explorer', JsonToken) then
-            MyRecord.explorer := JsonToken.AsValue().AsText();
+            if JsonToken.IsValue() and not JsonToken.AsValue().IsNull then
+                MyRecord.explorer := JsonToken.AsValue().AsText();
 
         MyRecord.Insert();
     end;

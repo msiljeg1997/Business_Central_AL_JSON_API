@@ -1,4 +1,4 @@
-page 50102 CryptoRatesAPIPage
+page 50102 "Crypto rates API"
 {
     PageType = List;
     ApplicationArea = All;

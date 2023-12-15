@@ -10,7 +10,7 @@ codeunit 50130 "Codeunit za Currency"
         JToken: JsonToken;
         TextReponse: Text;
         i: Integer;
-        myRecord: Record "Kurenzies";
+        myRecord: Record "APICurrenciesRates";
     begin
         myRecord.DeleteALl();
         if client.Get('https://api.hnb.hr/tecajn-eur/v3', Response) then begin
@@ -31,10 +31,10 @@ codeunit 50130 "Codeunit za Currency"
         end;
     end;
 
-    // PROCESIRANJE JTOKENA IZ APIJA U TABLICU "KURENZIES"
+    // PROCESIRANJE JTOKENA IZ APIJA U TABLICU "APICurrenciesRates"
     procedure ProcessJToken(JToken: JsonObject)
     var
-        MyRecord: Record "Kurenzies";
+        MyRecord: Record "APICurrenciesRates";
         JsonValue: JsonToken;
         Value: Text;
         DecimalValue: Decimal;
@@ -109,7 +109,7 @@ codeunit 50130 "Codeunit za Currency"
                     if Evaluate(DecimalValue, JsonValue.AsValue().AsText()) then begin
                         // Check if 'valuta' matches a "Currency Code"
                         if Currency.Get(Value) then begin
-                            // If they match, update "ExchangeRateAmt2" in "Currency" table
+                            // If match, update "ExchangeRateAmt2" in "Currency" table
                             Currency.ExchangeRateAmt2 := DecimalValue;
                             Currency.Modify();
                         end;
@@ -119,7 +119,7 @@ codeunit 50130 "Codeunit za Currency"
         end;
     end;
 
-    //POMOCNA PROCEDURA ZA PRINTANJE SVIH EXCHANGE RATE AMAUNTOVA ==> ZASTO SU SVI 100,0???.
+    //POMOCNA PROCEDURA ZA PRINTANJE SVIH EXCHANGE RATE AMAUNTOVA
     procedure PrintExchangeRateAmounts()
     var
         CurrencyExchangeRate: Record "Currency Exchange Rate";

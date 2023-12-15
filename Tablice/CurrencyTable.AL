@@ -1,4 +1,4 @@
-table 50103 "Kurenzies"
+table 50103 "APICurrenciesRates"
 {
     DataClassification = ToBeClassified;
 
