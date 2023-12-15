@@ -1,5 +1,7 @@
 codeunit 50130 "Codeunit za Currency"
 {
+
+    // PROCEDURA ZA DOBIJANJE PODATAKA IZ APIJA
     procedure GetApiData()
     var
         Client: HttpClient;
@@ -29,6 +31,7 @@ codeunit 50130 "Codeunit za Currency"
         end;
     end;
 
+    // PROCESIRANJE JTOKENA IZ APIJA U TABLICU "KURENZIES"
     procedure ProcessJToken(JToken: JsonObject)
     var
         MyRecord: Record "Kurenzies";
@@ -48,6 +51,7 @@ codeunit 50130 "Codeunit za Currency"
         MyRecord.Insert();
     end;
 
+    // POMOCNA PROCEDURA = IZLISTAJ SVE CURRENCY CODES SA CURRENCY TABLE
     procedure ListCurrencyCodes()
     var
         Currency: Record Currency;
@@ -62,6 +66,7 @@ codeunit 50130 "Codeunit za Currency"
         message(SpremiCurrency);
     end;
 
+    //SPREMANJE U LISTE
     procedure SpremanjeUListe()
     var
         Currency: Record Currency;
@@ -83,9 +88,10 @@ codeunit 50130 "Codeunit za Currency"
         end;
     end;
 
+    // GLAVNA PROCEDURA KOJA UPDEJTA "EXCHANGE RATE AMOUNT" SA "SREDNJIM_TECAJEM" IZ APIJA KADA SE MATCHA "ISO CODE" I "VALUTA"
     procedure UpdateExchangeRate(JsonArray: JsonArray)
     var
-        CurrencyExchangeRate: Record "Currency Exchange Rate";
+        Currency: Record Currency;
         JToken: JsonObject;
         JsonValue: JsonToken;
         Value: Text;
@@ -96,18 +102,34 @@ codeunit 50130 "Codeunit za Currency"
             if JsonArray.Get(i, JsonValue) then begin
                 JToken := JsonValue.AsObject();
 
-                //nadi valutu i srednji tecaj
+                // Get 'valuta' and 'srednji_tecaj'
                 if JToken.Get('valuta', JsonValue) then
                     Value := JsonValue.AsValue().AsText();
-                if JToken.Get('srednji_tecaj', JsonValue) then
+                if JToken.Get('srednji_tecaj', JsonValue) then begin
                     if Evaluate(DecimalValue, JsonValue.AsValue().AsText()) then begin
-                        // ako su istog imena valuta i ISO Code // tu se skipa i ne iterira dole??
-                        if CurrencyExchangeRate.Get(Value) then begin
-                            CurrencyExchangeRate."Exchange Rate Amount" := DecimalValue;
-                            CurrencyExchangeRate.Modify();
+                        // Check if 'valuta' matches a "Currency Code"
+                        if Currency.Get(Value) then begin
+                            // If they match, update "ExchangeRateAmt2" in "Currency" table
+                            Currency.ExchangeRateAmt2 := DecimalValue;
+                            Currency.Modify();
                         end;
                     end;
+                end;
             end;
         end;
+    end;
+
+    //POMOCNA PROCEDURA ZA PRINTANJE SVIH EXCHANGE RATE AMAUNTOVA ==> ZASTO SU SVI 100,0???.
+    procedure PrintExchangeRateAmounts()
+    var
+        CurrencyExchangeRate: Record "Currency Exchange Rate";
+        MessageText: Text;
+    begin
+        if CurrencyExchangeRate.FindSet() then
+            repeat
+                MessageText += StrSubstNo('Currency Code: %1, Exchange Rate Amount: %2', CurrencyExchangeRate."Currency Code", CurrencyExchangeRate."Exchange Rate Amount") + '\';
+            until CurrencyExchangeRate.Next() = 0;
+
+        Message(MessageText);
     end;
 }
