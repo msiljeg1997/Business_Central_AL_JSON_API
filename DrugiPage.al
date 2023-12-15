@@ -9,7 +9,7 @@ page 50102 JsonPage
     {
         area(Content)
         {
-            group(GroupName)
+            repeater(Informacije)
             {
                 field(id; Rec.id)
                 {

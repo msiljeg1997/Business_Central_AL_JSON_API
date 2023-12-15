@@ -56,7 +56,7 @@ table 50123 JsonTable
             DataClassification = ToBeClassified;
             DecimalPlaces = 0 : 100;
         }
-        field(12; explorer; Text[250])
+        field(12; explorer; Text[500])
         {
             DataClassification = ToBeClassified;
         }

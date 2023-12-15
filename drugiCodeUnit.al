@@ -37,50 +37,53 @@ codeunit 50123 JSONCodeUnit
         end;
     end;
 
-    procedure ProcessJToken(JToken: JsonObject)
+    procedure ProcessJToken(Jobjekt: JsonObject)
     var
         MyRecord: Record "JsonTable";
         JsonToken: JsonToken;
         DecimalValue: Decimal;
+        TextValue: Text;
     begin
         MyRecord.Init();
         MyRecord.TajmStamp := CurrentDateTime();
 
-        if JToken.Get('id', JsonToken) then
+        if Jobjekt.Get('id', JsonToken) then
             MyRecord.id := JsonToken.AsValue().AsText();
-        if JToken.Get('rank', JsonToken) then
-            MyRecord.rank := GetDecimalValue(JsonToken);
-        if JToken.Get('symbol', JsonToken) then
+        if Jobjekt.Get('rank', JsonToken) and Evaluate(DecimalValue, JsonToken.AsValue().AsText()) then
+            MyRecord.rank := DecimalValue;
+        if Jobjekt.Get('symbol', JsonToken) then
             MyRecord.symbol := JsonToken.AsValue().AsText();
-        if JToken.Get('name', JsonToken) then
+        if Jobjekt.Get('name', JsonToken) then
             MyRecord.name := JsonToken.AsValue().AsText();
-        if JToken.Get('supply', JsonToken) then
-            MyRecord.supply := GetDecimalValue(JsonToken);
-        if JToken.Get('maxSupply', JsonToken) then
-            MyRecord.maxSupply := GetDecimalValue(JsonToken);
-        if JToken.Get('marketCapUsd', JsonToken) then
-            MyRecord.marketCapUsd := GetDecimalValue(JsonToken);
-        if JToken.Get('volumeUsd24Hr', JsonToken) then
-            MyRecord.volumeUsd24Hr := GetDecimalValue(JsonToken);
-        if JToken.Get('priceUsd', JsonToken) then
-            MyRecord.priceUsd := GetDecimalValue(JsonToken);
-        if JToken.Get('changePercent24Hr', JsonToken) then
-            MyRecord.changePercent24Hr := GetDecimalValue(JsonToken);
-        if JToken.Get('vwap24Hr', JsonToken) then
-            MyRecord.vwap24Hr := GetDecimalValue(JsonToken);
+        if Jobjekt.Get('supply', JsonToken) and Evaluate(DecimalValue, JsonToken.AsValue().AsText()) then
+            MyRecord.supply := DecimalValue;
+        if Jobjekt.Get('maxSupply', JsonToken) then
+            if JsonToken.IsValue() AND JsonToken.AsValue().IsNull then
+                MyRecord.maxSupply := 0
+            else
+                if Evaluate(DecimalValue, JsonToken.AsValue().AsText()) then
+                    MyRecord.maxSupply := DecimalValue;
+        if Jobjekt.Get('marketCapUsd', JsonToken) and Evaluate(DecimalValue, JsonToken.AsValue().AsText()) then
+            MyRecord.marketCapUsd := DecimalValue;
+        if Jobjekt.Get('volumeUsd24Hr', JsonToken) and Evaluate(DecimalValue, JsonToken.AsValue().AsText()) then
+            MyRecord.volumeUsd24Hr := DecimalValue;
+        if Jobjekt.Get('priceUsd', JsonToken) and Evaluate(DecimalValue, JsonToken.AsValue().AsText()) then
+            MyRecord.priceUsd := DecimalValue;
+        if Jobjekt.Get('changePercent24Hr', JsonToken) and Evaluate(DecimalValue, JsonToken.AsValue().AsText()) then
+            MyRecord.changePercent24Hr := DecimalValue;
+        if Jobjekt.Get('vwap24Hr', JsonToken) then
+            if JsonToken.IsValue() AND JsonToken.AsValue().IsNull then
+                MyRecord.vwap24Hr := 0
+            else
+                if Evaluate(DecimalValue, JsonToken.AsValue().AsText()) then
+                    MyRecord.vwap24Hr := DecimalValue;
+        if Jobjekt.Get('explorer', JsonToken) then
+            MyRecord.explorer := JsonToken.AsValue().AsText();
 
         MyRecord.Insert();
     end;
 
-    procedure GetDecimalValue(JsonToken: JsonToken): Decimal;
-    begin
-        exit(JsonToken.AsValue().AsDecimal());
-    end;
 
-    procedure TryParseDecimal(DecimalText: Text; var DecimalValue: Decimal): Boolean
-    begin
-        exit(Evaluate(DecimalValue, DecimalText));
-    end;
 
     trigger OnRun()
     begin
