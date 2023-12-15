@@ -1,4 +1,4 @@
-table 50123 JsonTable
+table 50123 CryptoRatesAPITable
 {
     DataClassification = ToBeClassified;
 

@@ -12,7 +12,7 @@ codeunit 50123 JSONCodeUnit
         JToken: JsonToken;
         TextReponse: Text;
         i: Integer;
-        myRecord: Record "JsonTable";
+        myRecord: Record "CryptoRatesAPITable";
     begin
         myRecord.DeleteAll();
         if client.Get('https://api.coincap.io/v2/assets', Response) then begin
@@ -39,7 +39,7 @@ codeunit 50123 JSONCodeUnit
 
     procedure ProcessJToken(Jobjekt: JsonObject)
     var
-        MyRecord: Record "JsonTable";
+        MyRecord: Record "CryptoRatesAPITable";
         JsonToken: JsonToken;
         DecimalValue: Decimal;
         TextValue: Text;

@@ -1,9 +1,9 @@
-page 50102 JsonPage
+page 50102 CryptoRatesAPIPage
 {
     PageType = List;
     ApplicationArea = All;
     UsageCategory = Administration;
-    SourceTable = JsonTable;
+    SourceTable = CryptoRatesAPITable;
 
     layout
     {

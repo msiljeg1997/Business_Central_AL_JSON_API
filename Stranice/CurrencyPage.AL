@@ -1,9 +1,9 @@
-page 50113 ageZaDisplayCurrency
+page 50113 "API Currency Rates Page"
 {
     PageType = List;
     ApplicationArea = All;
     UsageCategory = Lists;
-    SourceTable = Kurenzies;
+    SourceTable = APICurrenciesRates;
 
     layout
     {
