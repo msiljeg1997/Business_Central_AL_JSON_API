@@ -11,12 +11,18 @@ page 50102 "Crypto rates API"
         {
             repeater(Informacije)
             {
+
+                field(TimeStamp; Rec.TajmStamp)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Time Stamp';
+                }
                 field(id; Rec.id)
                 {
                     ApplicationArea = All;
                     Caption = 'ID';
-
                 }
+
                 field(Rank; Rec.Rank)
                 {
                     ApplicationArea = All;

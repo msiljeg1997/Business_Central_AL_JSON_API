@@ -14,7 +14,6 @@ codeunit 50123 JSONCodeUnit
         i: Integer;
         myRecord: Record "CryptoRatesAPITable";
     begin
-        myRecord.DeleteAll();
         if client.Get('https://api.coincap.io/v2/assets', Response) then begin
             if Response.HttpStatusCode = 200 then begin
                 Response.Content.ReadAs(TextReponse);
