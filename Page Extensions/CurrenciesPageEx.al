@@ -32,6 +32,7 @@ pageextension 50108 PageExtensionCurrencies extends Currencies
                     NewCurrencysAPI.GetApiData();
                 end;
             }
+
         }
     }
 }

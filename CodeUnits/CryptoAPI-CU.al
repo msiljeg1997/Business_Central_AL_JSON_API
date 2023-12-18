@@ -32,6 +32,7 @@ codeunit 50123 JSONCodeUnit
                             Error('JSON token is not an object');
                     end;
                 end;
+
             end else
                 error('The http call failed');
         end;
@@ -82,13 +83,62 @@ codeunit 50123 JSONCodeUnit
                 MyRecord.explorer := JsonToken.AsValue().AsText();
 
         MyRecord.Insert();
+
     end;
 
 
-
-    trigger OnRun()
+    procedure ExportXmlToFile(XmlText: Text; FileName: Text)
+    var
+        InStream: InStream;
+        OutStream: OutStream;
+        TempBlob: Codeunit "Temp Blob";
     begin
+        TempBlob.CreateOutStream(OutStream);
+        OutStream.WriteText(XmlText);
+        TempBlob.CreateInStream(InStream);
+        DownloadFromStream(InStream, 'Export XML', '', 'XML Files (*.xml)|*.xml', FileName);
+    end;
 
+    procedure
+    ExportXML()
+    var
+        CryptoRatesAPITable: Record "CryptoRatesAPITable";
+        SpremanjeText: Text;
+        XmlText: Text;
+        //SAVING VARS
+        FileName: Text;
+        OutStream: OutStream;
+        InStream: InStream;
+        TempBlob: Codeunit "Temp Blob";
+
+    begin
+        XmlText := '<?xml version="1.0" encoding="UTF-8"?>' + '\n' + '<CryptoRates>';
+        if CryptoRatesAPITable.Find('-') then
+            repeat
+                XMLText += '<CryptoRate>';
+                XMLText += '<id>' + CryptoRatesAPITable.id + '</id>';
+                XMLText += '<Rank>' + FORMAT(CryptoRatesAPITable.Rank) + '</Rank>';
+                XMLText += '<symbol>' + CryptoRatesAPITable.symbol + '</symbol>';
+                XMLText += '<name>' + CryptoRatesAPITable.name + '</name>';
+                XMLText += '<supply>' + FORMAT(CryptoRatesAPITable.supply) + '</supply>';
+                XMLText += '<maxSupply>' + FORMAT(CryptoRatesAPITable.maxSupply) + '</maxSupply>';
+                XMLText += '<marketCapUsd>' + FORMAT(CryptoRatesAPITable.marketCapUsd) + '</marketCapUsd>';
+                XMLText += '<volumeUsd24Hr>' + FORMAT(CryptoRatesAPITable.volumeUsd24Hr) + '</volumeUsd24Hr>';
+                XMLText += '<priceUsd>' + FORMAT(CryptoRatesAPITable.priceUsd) + '</priceUsd>';
+                XMLText += '<changePercent24Hr>' + FORMAT(CryptoRatesAPITable.changePercent24Hr) + '</changePercent24Hr>';
+                XMLText += '<vwap24Hr>' + FORMAT(CryptoRatesAPITable.vwap24Hr) + '</vwap24Hr>';
+                XMLText += '<explorer>' + CryptoRatesAPITable.explorer + '</explorer>';
+                XMLText += '<TajmStamp>' + FORMAT(CryptoRatesAPITable.TajmStamp) + '</TajmStamp>';
+                XMLText += '</CryptoRate>';
+            until CryptoRatesAPITable.Next() = 0;
+        XMLText += '</CryptoRates>';
+
+        //SAVE
+        TempBlob.CreateOutStream(OutStream);
+        OutStream.WriteText(XmlText);
+        TempBlob.CreateInStream(InStream);
+        FileName := 'YourFile.xml';
+        DownloadFromStream(InStream, 'Save XML', 'XML Files (*.xml)|*.xml', FileName, FileName);
     end;
 
     var

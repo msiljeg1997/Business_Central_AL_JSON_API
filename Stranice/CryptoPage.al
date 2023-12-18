@@ -95,6 +95,23 @@ page 50102 "Crypto rates API"
 
                 end;
             }
+            action(DownloadXML)
+            {
+                ApplicationArea = All;
+                Caption = 'Skini XML datoteku nije virus';
+                Image = New;
+                Promoted = true;
+                PromotedCategory = Category4;
+                PromotedIsBig = true;
+
+                trigger OnAction()
+                var
+                    DownloadXML: Codeunit "JSONCodeUnit";
+                begin
+                    DownloadXML.ExportXML();
+
+                end;
+            }
         }
     }
 
