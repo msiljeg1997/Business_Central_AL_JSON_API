@@ -44,6 +44,7 @@ codeunit 50123 JSONCodeUnit
         DecimalValue: Decimal;
         TextValue: Text;
     begin
+
         MyRecord.Init();
         MyRecord.TajmStamp := CurrentDateTime();
 
@@ -111,24 +112,24 @@ codeunit 50123 JSONCodeUnit
         TempBlob: Codeunit "Temp Blob";
 
     begin
-        XmlText := '<?xml version="1.0" encoding="UTF-8"?>' + '\n' + '<CryptoRates>';
+        XmlText := '<?xml version="1.0" encoding="UTF-8"?>''<CryptoRates>';
         if CryptoRatesAPITable.Find('-') then
             repeat
-                XMLText += '<CryptoRate>';
+                XmlText += '<RateForCurrency>';
                 XMLText += '<id>' + CryptoRatesAPITable.id + '</id>';
                 XMLText += '<Rank>' + FORMAT(CryptoRatesAPITable.Rank) + '</Rank>';
                 XMLText += '<symbol>' + CryptoRatesAPITable.symbol + '</symbol>';
                 XMLText += '<name>' + CryptoRatesAPITable.name + '</name>';
-                XMLText += '<supply>' + FORMAT(CryptoRatesAPITable.supply) + '</supply>';
-                XMLText += '<maxSupply>' + FORMAT(CryptoRatesAPITable.maxSupply) + '</maxSupply>';
-                XMLText += '<marketCapUsd>' + FORMAT(CryptoRatesAPITable.marketCapUsd) + '</marketCapUsd>';
-                XMLText += '<volumeUsd24Hr>' + FORMAT(CryptoRatesAPITable.volumeUsd24Hr) + '</volumeUsd24Hr>';
-                XMLText += '<priceUsd>' + FORMAT(CryptoRatesAPITable.priceUsd) + '</priceUsd>';
-                XMLText += '<changePercent24Hr>' + FORMAT(CryptoRatesAPITable.changePercent24Hr) + '</changePercent24Hr>';
-                XMLText += '<vwap24Hr>' + FORMAT(CryptoRatesAPITable.vwap24Hr) + '</vwap24Hr>';
+                XMLText += '<supply>' + DecimalToString15(CryptoRatesAPITable.supply) + '</supply>';
+                XMLText += '<maxSupply>' + DecimalToString15(CryptoRatesAPITable.maxSupply) + '</maxSupply>';
+                XMLText += '<marketCapUsd>' + DecimalToString15(CryptoRatesAPITable.marketCapUsd) + '</marketCapUsd>';
+                XMLText += '<volumeUsd24Hr>' + DecimalToString15(CryptoRatesAPITable.volumeUsd24Hr) + '</volumeUsd24Hr>';
+                XMLText += '<priceUsd>' + DecimalToString15(CryptoRatesAPITable.priceUsd) + '</priceUsd>';
+                XMLText += '<changePercent24Hr>' + DecimalToString15(CryptoRatesAPITable.changePercent24Hr) + '</changePercent24Hr>';
+                XMLText += '<vwap24Hr>' + DecimalToString15(CryptoRatesAPITable.vwap24Hr) + '</vwap24Hr>';
                 XMLText += '<explorer>' + CryptoRatesAPITable.explorer + '</explorer>';
                 XMLText += '<TajmStamp>' + FORMAT(CryptoRatesAPITable.TajmStamp) + '</TajmStamp>';
-                XMLText += '</CryptoRate>';
+                XMLText += '</RateForCurrency>';
             until CryptoRatesAPITable.Next() = 0;
         XMLText += '</CryptoRates>';
 
@@ -138,6 +139,12 @@ codeunit 50123 JSONCodeUnit
         TempBlob.CreateInStream(InStream);
         FileName := 'YourFile.xml';
         DownloadFromStream(InStream, 'Save XML', 'XML Files (*.xml)|*.xml', FileName, FileName);
+    end;
+
+    //POMOCNA PROCEDURA ZA DECIMALNA MJESTA
+    procedure DecimalToString15(decimalValue: Decimal): Text
+    begin
+        exit(STRSUBSTNO('%1', decimalValue));
     end;
 
     var
